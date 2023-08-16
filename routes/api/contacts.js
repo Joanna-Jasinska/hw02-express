@@ -3,9 +3,26 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("node:path");
+const Joi = require("joi");
 
 const contactsPath = path.join(__dirname, "db/contacts.json");
 const data = JSON.parse(fs.readFileSync(contactsPath, "utf-8"));
+
+const contactSchema = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
+
+  phone: Joi.string().min(1),
+
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ["com", "net", "pl"] },
+  }),
+}).with("name", "email", "phone");
+
+const validate = (data) => {
+  const { error } = contactSchema.validate(data);
+  return !error;
+};
 
 function randomId() {
   var chars =
@@ -118,7 +135,7 @@ router.post("/", async (req, res, next) => {
   try {
     const { name, email, phone } = req.query;
 
-    if (name && email && phone) {
+    if (validate(req.query)) {
       const id = addContact(name, email, phone);
       res.json({
         status: 200,
@@ -163,7 +180,7 @@ router.put("/:id", async (req, res, next) => {
     const { name, email, phone } = req.query;
     const { id } = req.params;
 
-    if (name && email && phone) {
+    if (validate(req.query)) {
       const updated = updateContact(id, { name, email, phone });
       if (updated) {
         res.json({
