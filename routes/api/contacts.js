@@ -11,15 +11,15 @@ const data = JSON.parse(fs.readFileSync(contactsPath, "utf-8"));
 const contactSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
 
-  phone: Joi.string().min(1),
+  phone: Joi.string().min(1).required(),
 
   email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net", "pl"] },
   }),
-}).with("name", "email", "phone");
+});
 
-const validate = (data) => {
+const validateContact = (data) => {
   const { error } = contactSchema.validate(data);
   return !error;
 };
@@ -40,9 +40,10 @@ function listContacts() {
 }
 
 function getById(contactId) {
-  return data.filter((contact) => {
+  const found = data.filter((contact) => {
     return contact.id === contactId;
   });
+  return found.length > 0 ? found : false;
 }
 
 function removeContact(contactId) {
@@ -99,12 +100,10 @@ router.get("/", async (req, res, next) => {
     const contacts = await listContacts();
     res.json({
       status: 200,
-      data: {
-        contacts,
-      },
+      data: [...contacts],
     });
   } catch (err) {
-    next(err);
+    next({ ...err, comment: `Contacts not found.` });
   }
 });
 
@@ -116,18 +115,16 @@ router.get("/:id", async (req, res, next) => {
     if (contact) {
       res.json({
         status: 200,
-        data: {
-          contact,
-        },
+        data: [...contact],
       });
     } else {
       res.status(404).json({
         status: 404,
-        message: "Not found",
+        message: `[${id}] Not found`,
       });
     }
   } catch (err) {
-    next(err);
+    next({ ...err, comment: `[${id}] Not found` });
   }
 });
 
@@ -135,7 +132,7 @@ router.post("/", async (req, res, next) => {
   try {
     const { name, email, phone } = req.query;
 
-    if (validate(req.query)) {
+    if (validateContact(req.query)) {
       const id = addContact(name, email, phone);
       res.json({
         status: 200,
@@ -146,11 +143,11 @@ router.post("/", async (req, res, next) => {
     } else {
       res.status(400).json({
         status: 400,
-        message: "missing required field",
+        message: "Missing required field",
       });
     }
   } catch (err) {
-    next(err);
+    next({ ...err, comment: `Missing required field` });
   }
 });
 
@@ -167,11 +164,11 @@ router.delete("/:id", async (req, res, next) => {
     } else {
       res.status(404).json({
         status: 404,
-        message: "Not found",
+        message: `[${id}] Not found. Could not delete`,
       });
     }
   } catch (err) {
-    next(err);
+    next({ ...err, comment: `Nothing to delete` });
   }
 });
 
@@ -180,7 +177,7 @@ router.put("/:id", async (req, res, next) => {
     const { name, email, phone } = req.query;
     const { id } = req.params;
 
-    if (validate(req.query)) {
+    if (validateContact(req.query)) {
       const updated = updateContact(id, { name, email, phone });
       if (updated) {
         res.json({
@@ -195,7 +192,7 @@ router.put("/:id", async (req, res, next) => {
       } else {
         res.status(404).json({
           status: 404,
-          message: "Not found",
+          message: `[${id}] Not found. Could not update`,
         });
       }
     } else {
@@ -205,7 +202,7 @@ router.put("/:id", async (req, res, next) => {
       });
     }
   } catch (err) {
-    next(err);
+    next({ ...err, comment: `Nothing to update` });
   }
 });
 
