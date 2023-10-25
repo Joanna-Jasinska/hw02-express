@@ -2,22 +2,62 @@ const express = require("express");
 
 const router = express.Router();
 const fs = require("fs");
-const path = require("node:path");
 const Joi = require("joi");
+const { default: mongoose } = require("mongoose");
+require("dotenv").config();
+const uri = process.env.DB_URI;
+const connection = mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+connection.then(() => {
+  console.log("Connected to MongoDb");
+});
+const path = require("node:path");
 
 const contactsPath = path.join(__dirname, "db/contacts.json");
 const data = JSON.parse(fs.readFileSync(contactsPath, "utf-8"));
 
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
+// async function connectToDb() {
+//   try {
+//     await client.connect();
+//     // Send a ping to confirm a successful connection
+//     await client.db("admin").command({ ping: 1 });
+//     console.log(
+//       "Pinged your deployment. You successfully connected to MongoDB!"
+//     );
+//   } finally {
+//     // Ensures that the client will close when you finish/error
+//     await client.close();
+//   }
+// }
+// connectToDb().catch(console.dir);
+
 const contactSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
-
   phone: Joi.string().min(1).required(),
-
   email: Joi.string().email({
     minDomainSegments: 2,
     tlds: { allow: ["com", "net", "pl"] },
   }),
 });
+const Contact = mongoose.model("Contact", {
+  name: String,
+  phone: String,
+  email: String,
+  favorite: Boolean,
+});
+// const kitty = new Contact({ name: "kitty" });
+// kitty.save().then(()=>{});
 
 const validateContact = (data) => {
   const { error } = contactSchema.validate(data);
@@ -25,11 +65,10 @@ const validateContact = (data) => {
 };
 
 function randomId() {
-  var chars =
+  let chars =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz-".split("");
-
-  var str = "";
-  for (var i = 0; i < 21; i++) {
+  let str = "";
+  for (let i = 0; i < 21; i++) {
     str += chars[Math.floor(Math.random() * chars.length)];
   }
   return str;
@@ -124,7 +163,11 @@ router.get("/:id", async (req, res, next) => {
       });
     }
   } catch (err) {
-    next({ ...err, comment: `[${id}] Not found` });
+    // next({ ...err, comment: `[${id}] Not found` });
+    res.status(500).json({
+      status: 500,
+      message: `Internal server error`,
+    });
   }
 });
 
