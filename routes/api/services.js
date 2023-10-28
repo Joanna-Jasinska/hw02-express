@@ -1,5 +1,7 @@
-const Joi = require("joi");
-const { default: mongoose } = require("mongoose");
+// const Joi = require("joi");
+import Joi from "joi";
+// const { default: mongoose } = require("mongoose");
+import mongoose from "mongoose";
 
 const contactSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -104,7 +106,7 @@ const updateStatusContact = (contactId, body) => {
   return Contact.findOneAndUpdate(filter, body, { new: true });
 };
 
-module.exports = {
+export default {
   validateContact,
   validateFavorite,
   listContacts,

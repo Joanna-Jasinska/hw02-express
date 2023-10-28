@@ -1,4 +1,5 @@
-const services = require("./services");
+// const services = require("./services");
+import services from "./services.js";
 
 const getAll = async (req, res, next) => {
   try {
@@ -152,7 +153,7 @@ const updateFavorite = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   getAll,
   getById,
   remove,

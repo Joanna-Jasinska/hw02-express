@@ -1,6 +1,8 @@
-const express = require("express");
+// const express = require("express");
+import express from "express";
 const router = express.Router();
-const controller = require("./controller");
+// const controller = require("./controller");
+import controller from "./controller.js";
 
 // const fs = require("fs");
 // const Joi = require("joi");
@@ -32,4 +34,4 @@ router.put("/:id", controller.update);
 
 router.put("/:id/favorite", controller.updateFavorite);
 
-module.exports = router;
+export default router;
