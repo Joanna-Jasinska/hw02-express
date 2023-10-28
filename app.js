@@ -2,7 +2,7 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 
-const contactsRouter = require("./routes/api/contacts");
+const contactsRouter = require("./routes/api/routes");
 
 const app = express();
 
@@ -14,12 +14,13 @@ app.use(express.json());
 
 app.use("/api/contacts", contactsRouter);
 
+require("dotenv").config();
+const PORT = process.env.PORT || 3000;
+
 app.use((req, res) => {
-  res
-    .status(404)
-    .json({
-      message: "Address not found. Go to http://localhost/:3000/api/contacts/",
-    });
+  res.status(404).json({
+    message: `Address not found. Go to http://localhost/:${PORT}/api/contacts/`,
+  });
 });
 
 app.use((err, req, res, next) => {
