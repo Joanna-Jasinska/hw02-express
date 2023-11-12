@@ -1,7 +1,8 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-import contactsRouter from "./routes/routes.js";
+import contactsRouter from "./routes/contactsRoutes.js";
+import usersRouter from "./routes/usersRoutes.js";
 import dotenv from "dotenv";
 
 // import { userSchema } from "./validators/user.js";
@@ -15,7 +16,8 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use("/routes", contactsRouter);
+app.use("/api/contacts", contactsRouter);
+app.use("/api/users", usersRouter);
 
 const PORT = process.env.PORT || 3000;
 
