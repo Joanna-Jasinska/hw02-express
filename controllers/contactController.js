@@ -1,5 +1,4 @@
-// const services = require("./services");
-import services from "./services.js";
+import services from "../services/contactServices.js";
 
 const getAll = async (req, res, next) => {
   try {

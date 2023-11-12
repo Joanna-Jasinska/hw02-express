@@ -1,8 +1,7 @@
-// const express = require("express");
 import express from "express";
 const router = express.Router();
-// const controller = require("./controller");
-import controller from "./controller.js";
+import contactController from "../controllers/contactController.js";
+import userController from "../controllers/userController.js";
 
 // const fs = require("fs");
 // const Joi = require("joi");
@@ -22,16 +21,18 @@ import controller from "./controller.js";
 //   return str;
 // }
 
-router.get("/", controller.getAll);
+router.get("/", contactController.getAll);
 
-router.get("/:id", controller.getById);
+router.get("/:id", contactController.getById);
 
-router.post("/", controller.add);
+router.post("/", contactController.add);
 
-router.delete("/:id", controller.remove);
+router.delete("/:id", contactController.remove);
 
-router.put("/:id", controller.update);
+router.put("/:id", contactController.update);
 
-router.put("/:id/favorite", controller.updateFavorite);
+router.put("/:id/favorite", contactController.updateFavorite);
+
+router.post("/users/signup", userController.signUp);
 
 export default router;

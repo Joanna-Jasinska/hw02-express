@@ -10,8 +10,9 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const uri = process.env.DB_URI;
+const db = process.env.DB_NAME;
 const connection = mongoose.connect(uri, {
-  dbName: "db-contact",
+  dbName: db,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
