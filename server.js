@@ -4,10 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// app.listen(3000, () => {
-//   console.log("Server running. Use our API on port: 3000")
-// })
-
 const PORT = process.env.PORT || 3000;
 const uri = process.env.DB_URI;
 const db = process.env.DB_NAME;

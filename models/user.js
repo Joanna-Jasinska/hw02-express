@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-export const User = mongoose.model("user", {
+import bCrypt from "bcryptjs";
+import authServices from "../services/authServices.js";
+
+const Schema = mongoose.Schema;
+const userSchema = new Schema({
   password: {
     type: String,
     required: [true, "Password is required"],
@@ -19,3 +23,25 @@ export const User = mongoose.model("user", {
     default: null,
   },
 });
+
+userSchema.methods.setPassword = function (password) {
+  this.password = bCrypt.hashSync(password, bCrypt.genSaltSync(6));
+};
+userSchema.methods.validPassword = function (password) {
+  return bCrypt.compareSync(password, this.password);
+};
+userSchema.methods.generateToken = async function () {
+  const payload = {
+    id: this["_id"],
+    username: this.username || "You",
+  };
+  const token = (this.token = await authServices.createToken(payload));
+  this.token = token;
+  return token;
+};
+userSchema.methods.deleteToken = async function () {
+  this.token = null;
+  return;
+};
+
+export const User = mongoose.model("user", userSchema);

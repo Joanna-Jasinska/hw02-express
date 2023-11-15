@@ -4,6 +4,7 @@ import cors from "cors";
 import contactsRouter from "./routes/contactsRoutes.js";
 import usersRouter from "./routes/usersRoutes.js";
 import dotenv from "dotenv";
+import "./config/passport.js";
 
 // import { userSchema } from "./validators/user.js";
 
@@ -30,11 +31,5 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
-
-// const validation = userSchema.validate({
-//   password: "wrwtwt",
-//   email: "abd@efg",
-// });
-// console.log(validation);
 
 export default app;

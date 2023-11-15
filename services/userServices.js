@@ -1,27 +1,40 @@
 import { userSchema } from "../validators/user.js";
 import { User } from "../models/user.js";
-import authServices from "./authServices.js";
 
 const validateUser = async ({ email, password }) => {
   const { error } = userSchema.validate({ email, password });
-  console.log("userSchema.validate .error:", error);
   return { error };
-  //  ? { error: error } : { error: null };
 };
 
 const register = async ({ email, password }) => {
-  const token = await authServices.createToken({ email, password });
   const user = {
     email,
-    password,
-    token,
   };
-  console.log("registering user: ", user);
   const newUser = new User(user);
+  newUser.setPassword(password);
+  newUser.generateToken();
   return newUser.save();
+};
+
+const login = async ({ user }) => {
+  await user.generateToken();
+  await user.save();
+  return;
+};
+const logout = async ({ user }) => {
+  await user.deleteToken();
+  await user.save();
+  return;
+};
+
+const getById = async (id) => {
+  return User.findById(id);
 };
 
 export default {
   validateUser,
   register,
+  getById,
+  login,
+  logout,
 };

@@ -1,5 +1,7 @@
 import { User } from "../models/user.js";
+import contactServices from "../services/contactServices.js";
 import userServices from "../services/userServices.js";
+// import authServices from "../services/authServices.js";
 
 const signUp = async (req, res, next) => {
   try {
@@ -14,16 +16,13 @@ const signUp = async (req, res, next) => {
         message: error,
       });
     }
-    console.log("userExists: -defining");
-    const userExists = await User.findOne({ email: email });
-    console.log("userExists:", userExists);
+    const userExists = await User.findOne({ email }).lean();
     if (userExists) {
       return res.status(409).json({
         status: 409,
         message: "Email in use",
       });
     }
-    console.log("register validation no errors");
     const newUser = await userServices.register({ email, password });
     return res.json({
       status: 201,
@@ -33,6 +32,7 @@ const signUp = async (req, res, next) => {
           email: newUser.email,
         },
       },
+      token: newUser.token,
     });
   } catch (err) {
     return res.status(500).json({
@@ -55,21 +55,19 @@ const logIn = async (req, res, next) => {
         message: error,
       });
     }
-    console.log("user: -defining");
-    const user = await User.findOne({ email: email });
-    console.log("user:", user);
-    if (!user) {
+    const user = await User.findOne({ email });
+    if (!user || !user.validPassword(password)) {
       return res.status(401).json({
         status: 401,
         message: "Email or password is wrong",
       });
     }
-    console.log("logIn validation no errors");
-    // const newUser = await userServices.register({ email, password });
-    return res.json({
+
+    await userServices.login({ user });
+    return res.status(200).json({
       status: 200,
       data: {
-        token: "exampletoken",
+        token: user.token,
         user: {
           email,
           subscription: user.subscription,
@@ -83,8 +81,62 @@ const logIn = async (req, res, next) => {
     });
   }
 };
+const current = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const user = await userServices.getById(id);
+    if (!user) {
+      return res.status(401).json({
+        status: 401,
+        message: "Not authorized",
+        data: "Unauthorized",
+      });
+    }
+    const contactsCount = await contactServices.countContacts({ userId: id });
+    return res.status(200).json({
+      status: 200,
+      data: {
+        user: {
+          email: user.email,
+          subscription: user.subscription,
+          contacts: contactsCount,
+        },
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      message: `Internal server error: ${err}`,
+    });
+  }
+};
+
+const logOut = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const user = await userServices.getById(id);
+    if (!user) {
+      return res.status(401).json({
+        status: 401,
+        message: "Not authorized",
+        data: "Unauthorized",
+      });
+    }
+    await userServices.logout({ user });
+    return res.status(204).json({
+      status: 204,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: 500,
+      message: `Internal server error: ${err}`,
+    });
+  }
+};
 
 export default {
   signUp,
   logIn,
+  logOut,
+  current,
 };

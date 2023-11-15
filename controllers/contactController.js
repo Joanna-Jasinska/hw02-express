@@ -2,7 +2,8 @@ import services from "../services/contactServices.js";
 
 const getAll = async (req, res, next) => {
   try {
-    const contacts = await services.listContacts();
+    const userId = req.user.id;
+    const contacts = await services.listContacts({ userId });
     return res.json({
       status: 200,
       data: [...contacts],
@@ -17,8 +18,9 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const contact = await services.getById(id);
+    const contactId = req.params.id;
+    const userId = req.user.id;
+    const contact = await services.getById({ userId, contactId });
 
     if (contact) {
       return res.json({
@@ -28,7 +30,7 @@ const getById = async (req, res, next) => {
     }
     return res.status(404).json({
       status: 404,
-      message: `[${id}] Not found.`,
+      message: `[${contactId}] Not found.`,
     });
   } catch (err) {
     return res.status(500).json({
@@ -41,9 +43,16 @@ const getById = async (req, res, next) => {
 const add = async (req, res, next) => {
   try {
     const { name, email, phone, favorite } = req.body;
+    const userId = req.user.id;
 
     if (services.validateContact(req.body)) {
-      const result = await services.addContact(name, email, phone, favorite);
+      const result = await services.addContact({
+        name,
+        email,
+        phone,
+        favorite,
+        userId,
+      });
       return res.json({
         status: 200,
         data: result["_id"],
@@ -63,8 +72,9 @@ const add = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const deleted = await services.removeContact(id);
+    const contactId = req.params.id;
+    const userId = req.user.id;
+    const deleted = await services.removeContact({ contactId, userId });
 
     if (deleted) {
       return res.json({
@@ -74,7 +84,7 @@ const remove = async (req, res, next) => {
     }
     return res.status(404).json({
       status: 404,
-      message: `[${id}] Not found. Could not delete`,
+      message: `[${contactId}] Not found. Could not delete`,
     });
   } catch (err) {
     return res.status(500).json({
@@ -87,14 +97,20 @@ const remove = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const { name, email, phone, favorite } = req.body;
-    const { id } = req.params;
+    const contactId = req.params.id;
+    const userId = req.user.id;
 
     if (services.validateContact(req.body)) {
-      const updated = await services.updateContact(id, {
+      const newData = {
         name,
         email,
         phone,
         favorite,
+      };
+      const updated = await services.updateContact({
+        userId,
+        contactId,
+        newData,
       });
       if (updated) {
         return res.json({
@@ -105,7 +121,7 @@ const update = async (req, res, next) => {
 
       return res.status(404).json({
         status: 404,
-        message: `[${id}] Not found. Could not update`,
+        message: `[${contactId}] Not found. Could not update`,
       });
     }
 
@@ -123,10 +139,13 @@ const update = async (req, res, next) => {
 const updateFavorite = async (req, res, next) => {
   try {
     const { favorite } = req.body;
-    const { id } = req.params;
+    const contactId = req.params.id;
+    const userId = req.user.id;
 
     if (services.validateFavorite({ favorite })) {
-      const updated = await services.updateStatusContact(id, {
+      const updated = await services.updateStatusContact({
+        userId,
+        contactId,
         favorite,
       });
       if (updated) {
@@ -137,7 +156,7 @@ const updateFavorite = async (req, res, next) => {
       }
       return res.status(404).json({
         status: 404,
-        message: `[${id}] Not found. Could not update`,
+        message: `[${contactId}] Not found. Could not update`,
       });
     }
     return res.status(400).json({
