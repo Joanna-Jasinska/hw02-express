@@ -1,4 +1,4 @@
-GoIT Node.js Course Template Homewor`<bearer token>`k
+GoIT Node.js Course Template Homework
 
 # Routes:
 
