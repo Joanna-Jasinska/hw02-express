@@ -1,5 +1,6 @@
 import { userSchema } from "../validators/user.js";
 import { User } from "../models/user.js";
+import imageServices from "./imageServices.js";
 
 const validateUser = async ({ email, password }) => {
   const { error } = userSchema.validate({ email, password });
@@ -13,6 +14,7 @@ const register = async ({ email, password }) => {
   const newUser = new User(user);
   newUser.setPassword(password);
   newUser.generateToken();
+  newUser.setAvatar({ avatarURL: imageServices.generateAvatar(email) });
   return newUser.save();
 };
 
@@ -27,6 +29,12 @@ const logout = async ({ user }) => {
   return;
 };
 
+const setAvatar = async ({ user, avatarURL }) => {
+  await user.setAvatar({ avatarURL });
+  await user.save();
+  return;
+};
+
 const getById = async (id) => {
   return User.findById(id);
 };
@@ -37,4 +45,5 @@ export default {
   getById,
   login,
   logout,
+  setAvatar,
 };
