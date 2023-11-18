@@ -1,8 +1,8 @@
 GoIT Node.js Course Template Homewor`<bearer token>`k
 
-## Routes:
+# Routes:
 
-# /api/contacts
+## /api/contacts
 
 GET `/` `auth(<bearer token>)`
 
@@ -16,7 +16,7 @@ PUT `/<id>` `auth(<bearer token>)` `body({phone, name, email})`
 
 PUT `/<id>/favorite` `auth(<bearer token>)` `body({ favorite })`
 
-# /api/users
+## /api/users
 
 POST `/signup` `body({email, password})`
 
@@ -28,7 +28,7 @@ GET `/current` `auth(<bearer token>)`
 
 PATCH `/avatars` `auth(<bearer token>)`
 
-# /api/avatars
+## /api/avatars
 
 GET `/<avatarFileName.extension>`
 
