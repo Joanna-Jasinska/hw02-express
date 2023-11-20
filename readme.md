@@ -1,31 +1,40 @@
-## GoIT Node.js Course Template Homework
+GoIT Node.js Course Template Homework
 
-Виконайте форк цього репозиторію для виконання домашніх завдань (2-6)
-Форк створить репозиторій на вашому http://github.com
+# Routes:
 
-Додайте ментора до колаборації
+## /api/contacts
 
-Для кожної домашньої роботи створюйте свою гілку.
+GET `/` `auth(<bearer token>)`
 
-- hw02
-- hw03
-- hw04
-- hw05
-- hw06
+GET `/<id>` `auth(<bearer token>)`
 
-Кожна нова гілка для др повинна робитися з master
+POST `/` `auth(<bearer token>)` `body({ phone, name, email, favorite })`
 
-Після того, як ви закінчили виконувати домашнє завдання у своїй гілці, необхідно зробити пулл-реквест (PR). Потім додати ментора для рев'ю коду. Тільки після того, як ментор заапрувить PR, ви можете виконати мердж гілки з домашнім завданням у майстер.
+DELETE `/<id>` `auth(<bearer token>)`
 
-Уважно читайте коментарі ментора. Виправте зауваження та зробіть коміт у гілці з домашнім завданням. Зміни підтягнуться у PR автоматично після того, як ви відправите коміт з виправленнями на github
-Після виправлення знову додайте ментора на рев'ю коду.
+PUT `/<id>` `auth(<bearer token>)` `body({phone, name, email})`
 
-- При здачі домашньої роботи є посилання на PR
-- JS-код чистий та зрозумілий, для форматування використовується Prettier
+PUT `/<id>/favorite` `auth(<bearer token>)` `body({ favorite })`
 
-### Команди:
+## /api/users
 
-- `npm start` &mdash; старт сервера в режимі production
-- `npm run start:dev` &mdash; старт сервера в режимі розробки (development)
-- `npm run lint` &mdash; запустити виконання перевірки коду з eslint, необхідно виконувати перед кожним PR та виправляти всі помилки лінтера
-- `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними виправленнями простих помилок
+POST `/signup` `body({email, password})`
+
+POST `/login` `body({email, password})`
+
+GET `/logout` `auth(<bearer token>)`
+
+GET `/current` `auth(<bearer token>)`
+
+PATCH `/avatars` `auth(<bearer token>)`
+
+## /api/avatars
+
+GET `/<avatarFileName.extension>`
+
+### Commands:
+
+- `npm start` &mdash;
+- `npm run start:dev` &mdash;
+- `npm run lint` &mdash;
+- `npm lint:fix` &mdash;

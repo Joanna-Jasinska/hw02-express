@@ -1,6 +1,9 @@
 import app from "./app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import path from "path";
+import FS from "fs";
+const fs = FS.promises;
 
 dotenv.config();
 
@@ -12,9 +15,28 @@ const connection = mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+const publicDir = path.join(process.cwd(), "public");
+const uploadDir = path.join(publicDir, "temp");
+const avatarsDir = path.join(publicDir, "avatars");
+const isAccessible = (path) => {
+  return fs
+    .access(path)
+    .then(() => true)
+    .catch(() => false);
+};
+const createFolderIfNonExistent = async (folder) => {
+  if (!(await isAccessible(folder))) {
+    await fs.mkdir(folder);
+  }
+};
+
 connection
   .then(() => {
     app.listen(PORT, () => {
+      createFolderIfNonExistent(publicDir);
+      createFolderIfNonExistent(uploadDir);
+      createFolderIfNonExistent(avatarsDir);
       console.log("-------------------------------------------------");
       console.log(
         `Database connection successful. Use our API on port: ${PORT}`
