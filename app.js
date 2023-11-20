@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use((req, res) => {
   res.status(404).json({
-    message: `Address not found. Go to http://localhost:${PORT}/api/contacts/`,
+    message: `Address not found. Go to http://localhost:${PORT}/api/avatars/example.png`,
   });
 });
 
