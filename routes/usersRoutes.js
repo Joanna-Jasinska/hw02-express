@@ -1,8 +1,8 @@
 import express from "express";
+import * as userController from "#controllers/user/index.js";
+import * as services from "#services/auth/index.js";
+import * as fileServices from "#services/file/index.js";
 const router = express.Router();
-import userController from "../controllers/userController.js";
-import services from "../services/authServices.js";
-import fileServices from "../services/fileServices.js";
 
 router.post("/signup", userController.signUp);
 router.post("/login", userController.logIn);

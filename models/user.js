@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bCrypt from "bcryptjs";
-import authServices from "../services/authServices.js";
+import * as authServices from "#services/auth/index.js";
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema({

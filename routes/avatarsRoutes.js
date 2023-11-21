@@ -1,7 +1,7 @@
 import express from "express";
+import * as imageController from "#controllers/file/index.js";
 
 const router = express.Router();
-import imageController from "../controllers/imageController.js";
 
 router.get("/:imagePath", imageController.showPublicAvatar);
 

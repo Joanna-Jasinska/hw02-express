@@ -1,6 +1,4 @@
-import mongoose, { Schema, SchemaTypes } from "mongoose";
-// import { User } from "./user.js";
-// import { contactSchema } from "../validators/contact";
+import mongoose, { SchemaTypes } from "mongoose";
 
 export const Contact = mongoose.model("contact", {
   name: { type: String, required: [true, "Set name for contact"] },

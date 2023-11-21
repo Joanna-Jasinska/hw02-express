@@ -1,14 +1,12 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-import contactsRouter from "./routes/contactsRoutes.js";
-import usersRouter from "./routes/usersRoutes.js";
-import avatarsRouter from "./routes/avatarsRoutes.js";
+import contactsRouter from "#routes/contactsRoutes.js";
+import usersRouter from "#routes/usersRoutes.js";
+import avatarsRouter from "#routes/avatarsRoutes.js";
 import dotenv from "dotenv";
 import path from "path";
-import "./config/passport.js";
-
-// import { userSchema } from "./validators/user.js";
+import "#config/passport.js";
 
 const app = express();
 dotenv.config();

@@ -1,7 +1,7 @@
 import express from "express";
+import * as contactController from "#controllers/contacts/index.js";
+import * as services from "#services/auth/index.js";
 const router = express.Router();
-import contactController from "../controllers/contactController.js";
-import services from "../services/authServices.js";
 
 router.get("/", services.auth, contactController.getAll);
 

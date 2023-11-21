@@ -9,6 +9,14 @@
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },
+  "imports": {
+    "#routes/*": "./routes/*",
+    "#controllers/*": "./controllers/*",
+    "#services/*": "./services/*",
+    "#config/*": "./config/*",
+    "#models/*": "./models/*",
+    "#validators/*": "./validators/*"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

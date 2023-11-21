@@ -1,12 +1,12 @@
 import path from "path";
 import FS from "fs";
 import dotenv from "dotenv";
-import imageServices from "../services/imageServices.js";
+import * as fileServices from "#services/file/index.js";
 dotenv.config();
 const PORT = process.env.PORT || 3000;
 const fs = FS.promises;
 
-const showPublicAvatar = async (req, res) => {
+export const showPublicAvatar = async (req, res) => {
   const { imagePath } = req.params;
   const partialPath = `/avatars/${imagePath}`;
   const fullPath = path.join(path.resolve("./public"), partialPath);
@@ -17,12 +17,7 @@ const showPublicAvatar = async (req, res) => {
     return res.status(404).json({
       status: 404,
       message: `Avatar [${imagePath}] not found. Go to http://localhost:${PORT}/api/avatars/example.png`,
-      // error: err,
     });
   }
-  return res.send(imageServices.avatarImg({ imagePath: partialPath }));
-};
-
-export default {
-  showPublicAvatar,
+  return res.send(fileServices.avatarImg({ imagePath: partialPath }));
 };
