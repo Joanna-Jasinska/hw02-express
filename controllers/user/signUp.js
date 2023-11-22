@@ -1,5 +1,6 @@
 import { User } from "#models/user.js";
 import * as userServices from "#services/user/index.js";
+import * as mailingServices from "#services/mailing/index.js";
 
 export const signUp = async (req, res, next) => {
   try {
@@ -22,6 +23,10 @@ export const signUp = async (req, res, next) => {
       });
     }
     const newUser = await userServices.register({ email, password });
+    await mailingServices.sendVerificationLink({
+      email,
+      verificationToken: newUser.verificationToken,
+    });
     return res.json({
       status: 201,
       data: {
@@ -30,7 +35,6 @@ export const signUp = async (req, res, next) => {
           email: newUser.email,
         },
       },
-      token: newUser.token,
     });
   } catch (err) {
     return res.status(500).json({

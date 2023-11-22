@@ -22,6 +22,14 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
+  verificationToken: {
+    type: String,
+    default: null,
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
   avatarURL: String,
 });
 
@@ -39,12 +47,22 @@ userSchema.methods.generateToken = async function () {
     id: this["_id"],
     username: this.username || "You",
   };
-  const token = (this.token = await authServices.createToken(payload));
+  const token = await authServices.createToken(payload);
   this.token = token;
+  return token;
+};
+userSchema.methods.generateVerificationToken = async function () {
+  const token = await authServices.createVerificationToken();
+  this.verificationToken = token;
   return token;
 };
 userSchema.methods.deleteToken = async function () {
   this.token = null;
+  return;
+};
+userSchema.methods.verify = async function () {
+  this.verificationToken = null;
+  this.verified = true;
   return;
 };
 

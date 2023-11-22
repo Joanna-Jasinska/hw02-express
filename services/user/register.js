@@ -7,7 +7,7 @@ export const register = async ({ email, password }) => {
   };
   const newUser = new User(user);
   newUser.setPassword(password);
-  newUser.generateToken();
+  newUser.generateVerificationToken();
   newUser.setAvatar({ avatarURL: imageServices.generateAvatarUrl(email) });
   return newUser.save();
 };

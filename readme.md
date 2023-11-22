@@ -20,6 +20,10 @@ PUT `/<id>/favorite` `auth(<bearer token>)` `body({ favorite })`
 
 POST `/signup` `body({email, password})`
 
+POST `/verify` `body({email})`
+
+GET `/verify/:verificationToken`
+
 POST `/login` `body({email, password})`
 
 GET `/logout` `auth(<bearer token>)`
