@@ -4,3 +4,4 @@ export * from "./login.js";
 export * from "./logout.js";
 export * from "./setAvatar.js";
 export * from "./getById.js";
+export * from "./verify.js";

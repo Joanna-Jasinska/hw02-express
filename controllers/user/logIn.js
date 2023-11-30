@@ -21,6 +21,12 @@ export const logIn = async (req, res, next) => {
         message: "Email or password is wrong",
       });
     }
+    if (!user.verified) {
+      return res.status(401).json({
+        status: 401,
+        message: "User not verified. Check your email for verification link",
+      });
+    }
 
     await userServices.login({ user });
     return res.status(200).json({

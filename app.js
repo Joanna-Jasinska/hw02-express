@@ -3,9 +3,7 @@ import logger from "morgan";
 import cors from "cors";
 import contactsRouter from "#routes/contactsRoutes.js";
 import usersRouter from "#routes/usersRoutes.js";
-import avatarsRouter from "#routes/avatarsRoutes.js";
 import dotenv from "dotenv";
-import path from "path";
 import "#config/passport.js";
 
 const app = express();
@@ -16,11 +14,10 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.resolve("./public")));
 
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/avatars", avatarsRouter);
+app.use("/api/avatars", express.static("./public/avatars"));
 
 const PORT = process.env.PORT || 3000;
 

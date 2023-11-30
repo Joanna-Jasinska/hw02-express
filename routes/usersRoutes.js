@@ -14,5 +14,7 @@ router.patch(
   fileServices.uploadMiddleware,
   userController.avatarUpdate
 );
+router.get("/verify/:verificationToken", userController.verify);
+router.post("/verify", userController.resendEmail);
 
 export default router;
